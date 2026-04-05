@@ -1,0 +1,97 @@
+{
+  "product_name": "ContractFlow",
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "price_monthly": 79,
+      "price_annual": 758,
+      "stripe_price_id_monthly": "price_contractflow_starter_monthly",
+      "stripe_price_id_annual": "price_contractflow_starter_annual",
+      "limits": {
+        "contracts": 10,
+        "team_members": 3,
+        "templates": 5,
+        "ai_reviews_per_month": 20,
+        "storage_gb": 5
+      },
+      "features": [
+        "Up to 10 active contracts",
+        "3 team members",
+        "AI contract review",
+        "Basic e-signature",
+        "PDF export",
+        "Email notifications",
+        "Standard support"
+      ],
+      "highlight": false
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "price_monthly": 199,
+      "price_annual": 1910,
+      "stripe_price_id_monthly": "price_contractflow_pro_monthly",
+      "stripe_price_id_annual": "price_contractflow_pro_annual",
+      "limits": {
+        "contracts": 100,
+        "team_members": 15,
+        "templates": 50,
+        "ai_reviews_per_month": 200,
+        "storage_gb": 50
+      },
+      "features": [
+        "Up to 100 active contracts",
+        "15 team members",
+        "AI contract drafting + review",
+        "Advanced e-signature with audit trail",
+        "Custom approval workflows",
+        "Template library",
+        "Analytics dashboard",
+        "Priority support",
+        "API access"
+      ],
+      "highlight": true,
+      "badge": "Most Popular"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price_monthly": 499,
+      "price_annual": 4790,
+      "stripe_price_id_monthly": "price_contractflow_enterprise_monthly",
+      "stripe_price_id_annual": "price_contractflow_enterprise_annual",
+      "limits": {
+        "contracts": -1,
+        "team_members": -1,
+        "templates": -1,
+        "ai_reviews_per_month": -1,
+        "storage_gb": 500
+      },
+      "features": [
+        "Unlimited active contracts",
+        "Unlimited team members",
+        "All Pro features",
+        "Custom AI model fine-tuning",
+        "SSO / SAML integration",
+        "Custom approval workflows",
+        "Dedicated account manager",
+        "SLA guarantee (99.9% uptime)",
+        "Full API access + webhooks",
+        "White-label option",
+        "Custom contract types"
+      ],
+      "highlight": false,
+      "badge": "Enterprise"
+    }
+  ],
+  "trial_days": 14,
+  "webhook_events": [
+    "checkout.session.completed",
+    "customer.subscription.created",
+    "customer.subscription.updated",
+    "customer.subscription.deleted",
+    "invoice.payment_succeeded",
+    "invoice.payment_failed"
+  ]
+}
