@@ -1,0 +1,38 @@
+{
+  "bundles": [
+    {
+      "id": "aurora-legal-suite",
+      "name": "Aurora Legal Suite",
+      "description": "The complete AI-powered legal operations platform for modern enterprises. Includes ContractFlow for contract lifecycle management, plus the full AgentDesk productivity suite.",
+      "discount_percent": 20,
+      "partner": "AgentDesk",
+      "products": [
+        {
+          "id": "contractflow",
+          "name": "ContractFlow",
+          "base_price_monthly": 199,
+          "plan": "Pro"
+        },
+        {
+          "id": "agentdesk",
+          "name": "AgentDesk",
+          "base_price_monthly": 149,
+          "plan": "Pro"
+        }
+      ],
+      "bundle_price_monthly": 278,
+      "savings_monthly": 70,
+      "features": [
+        "ContractFlow Pro - AI contract lifecycle management",
+        "AgentDesk Pro - AI productivity suite",
+        "Unified billing",
+        "Cross-product workflow integrations",
+        "Shared team workspace",
+        "Priority support for both products",
+        "Joint onboarding session"
+      ],
+      "cta": "Start 14-day free trial",
+      "badge": "Save 20%"
+    }
+  ]
+}
