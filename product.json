@@ -1,0 +1,45 @@
+{
+  "id": "contractflow",
+  "name": "ContractFlow",
+  "tagline": "AI-powered contract lifecycle management for enterprise teams",
+  "description": "ContractFlow is a production-ready SaaS that transforms how legal and operations teams draft, review, sign, and manage contracts. Powered by GPT-4o for intelligent contract review and drafting, ContractFlow cuts contract cycle times by 80% and reduces legal risk exposure through automated risk scoring.",
+  "category": "Legal Tech / LegalOps",
+  "version": "1.0.0",
+  "base_price_monthly": 79,
+  "currency": "USD",
+  "billing_model": "per-seat SaaS with plan tiers",
+  "target_market": [
+    "Enterprise legal teams",
+    "Corporate counsel",
+    "Procurement departments",
+    "HR & employment teams",
+    "Startup legal ops"
+  ],
+  "key_features": [
+    "AI contract drafting with GPT-4o",
+    "Automated risk scoring (0-100)",
+    "Multi-party e-signature workflows",
+    "Approval chain management",
+    "Contract version history",
+    "Template library (public + private)",
+    "Audit trail for compliance",
+    "Real-time contract analytics",
+    "Team collaboration with comments",
+    "Stripe-powered billing"
+  ],
+  "tech_stack": {
+    "frontend": "Next.js 14 App Router, TypeScript, Tailwind CSS",
+    "backend": "Supabase (PostgreSQL + Auth + RLS)",
+    "ai": "OpenAI GPT-4o",
+    "payments": "Stripe",
+    "rate_limiting": "Upstash Redis",
+    "monitoring": "Sentry",
+    "deployment": "Vercel"
+  },
+  "repository": "https://github.com/21leahcimhtiek-oss/contractflow",
+  "demo_url": "https://contractflow.app",
+  "docs_url": "https://contractflow.app/docs",
+  "support_email": "support@contractflow.app",
+  "license": "MIT",
+  "created_at": "2024-01-01"
+}
