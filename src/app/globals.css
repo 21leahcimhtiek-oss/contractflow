@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --aurora-primary: 99 102 241;
+    --aurora-secondary: 139 92 246;
+    --aurora-accent: 167 139 250;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .aurora-gradient-text {
+    @apply bg-gradient-to-r from-aurora-500 via-purple-500 to-aurora-400 bg-clip-text text-transparent;
+  }
+
+  .aurora-card {
+    @apply bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-draft { @apply status-badge bg-gray-100 text-gray-700; }
+  .status-review { @apply status-badge bg-blue-100 text-blue-700; }
+  .status-pending_signature { @apply status-badge bg-yellow-100 text-yellow-700; }
+  .status-active { @apply status-badge bg-green-100 text-green-700; }
+  .status-expired { @apply status-badge bg-red-100 text-red-700; }
+  .status-terminated { @apply status-badge bg-gray-100 text-gray-500; }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors;
+  }
+
+  .sidebar-link-active {
+    @apply sidebar-link bg-aurora-50 text-aurora-700;
+  }
+}
+
+/* Aurora animated background */
+.aurora-bg {
+  background: linear-gradient(-45deg, #667eea, #764ba2, #6366f1, #8b5cf6);
+  background-size: 400% 400%;
+  animation: aurora-shift 12s ease infinite;
+}
+
+@keyframes aurora-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Prose styles for contract markdown */
+.contract-prose {
+  @apply prose prose-sm max-w-none;
+}
+
+.contract-prose h1 { @apply text-xl font-bold text-gray-900 mb-4; }
+.contract-prose h2 { @apply text-lg font-semibold text-gray-800 mt-6 mb-3; }
+.contract-prose h3 { @apply text-base font-semibold text-gray-700 mt-4 mb-2; }
+.contract-prose p { @apply text-gray-700 leading-relaxed mb-3; }
+.contract-prose li { @apply text-gray-700 leading-relaxed; }
+.contract-prose strong { @apply text-gray-900 font-semibold; }
