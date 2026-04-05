@@ -1,0 +1,16 @@
+{
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "installCommand": "npm install",
+  "env": {
+    "NEXT_PUBLIC_APP_URL": "@app-url"
+  },
+  "crons": [
+    {
+      "path": "/api/cron/expire-contracts",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
