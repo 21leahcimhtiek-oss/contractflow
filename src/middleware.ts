@@ -1,18 +1,39 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PUBLIC_ROUTES = ["/", "/login", "/signup", "/reset-password", "/api/billing/webhook"];
+const PUBLIC_PATHS = new Set(["/", "/login", "/signup", "/reset-password"]);
+const PUBLIC_API_PATHS = new Set([
+  "/api/auth/callback",
+  "/api/billing/webhook",
+  "/api/cron/renewals",
+]);
+const DASHBOARD_PATHS = [
+  "/dashboard",
+  "/contracts",
+  "/obligations",
+  "/workflows",
+  "/approvals",
+  "/renewals",
+  "/settings",
+  "/billing",
+];
+
+function isStaticPath(pathname: string) {
+  return (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/monitoring") ||
+    pathname.match(/\.(ico|png|jpg|svg|css|js)$/) !== null
+  );
+}
+
+function isProtectedAppPath(pathname: string) {
+  return DASHBOARD_PATHS.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes and static files
-  if (
-    PUBLIC_ROUTES.some((route) => pathname.startsWith(route)) ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/monitoring") ||
-    pathname.match(/\.(ico|png|jpg|svg|css|js)$/)
-  ) {
+  if (isStaticPath(pathname) || PUBLIC_PATHS.has(pathname) || PUBLIC_API_PATHS.has(pathname)) {
     return NextResponse.next();
   }
 
@@ -43,11 +64,11 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user && pathname.startsWith("/dashboard")) {
+  if (!user && isProtectedAppPath(pathname)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (!user && pathname.startsWith("/api/") && !pathname.startsWith("/api/billing/webhook")) {
+  if (!user && pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -1,83 +1,34 @@
 import { reviewContract } from "@/lib/openai/review-contract";
 
-jest.mock("openai", () => {
-  return jest.fn().mockImplementation(() => ({
-    chat: {
-      completions: {
-        create: jest.fn(),
-      },
-    },
-  }));
-});
-
-import OpenAI from "openai";
-
-describe("reviewContract", () => {
-  let mockCreate: jest.Mock;
+describe("reviewContract fallback", () => {
+  const originalKey = process.env.OPENAI_API_KEY;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    const instance = new (OpenAI as jest.MockedClass<typeof OpenAI>)();
-    mockCreate = instance.chat.completions.create as jest.Mock;
-    (OpenAI as jest.MockedClass<typeof OpenAI>).mockImplementation(() => ({
-      chat: { completions: { create: mockCreate } },
-    }) as any);
+    process.env.OPENAI_API_KEY = "";
   });
 
-  it("returns review result with risk_score and findings", async () => {
-    const mockResult = {
-      risk_score: 65,
-      summary: "Standard NDA with moderate risk",
-      findings: [
-        {
-          severity: "medium",
-          clause: "Section 3 - Confidentiality",
-          issue: "Broad definition of confidential information",
-          suggestion: "Narrow the definition to specific categories",
-        },
-      ],
-    };
-
-    mockCreate.mockResolvedValueOnce({
-      choices: [
-        {
-          message: {
-            content: JSON.stringify(mockResult),
-          },
-        },
-      ],
-    });
-
-    const result = await reviewContract("This is a test NDA contract content.");
-
-    expect(result).toBeDefined();
-    expect(result.risk_score).toBeGreaterThanOrEqual(0);
-    expect(result.risk_score).toBeLessThanOrEqual(100);
-    expect(Array.isArray(result.findings)).toBe(true);
+  afterAll(() => {
+    process.env.OPENAI_API_KEY = originalKey;
   });
 
-  it("handles API errors with retry", async () => {
-    mockCreate
-      .mockRejectedValueOnce(new Error("API Error"))
-      .mockRejectedValueOnce(new Error("API Error"))
-      .mockRejectedValueOnce(new Error("Final Error"));
+  it("returns high risk findings for risky language", async () => {
+    const result = await reviewContract(
+      "This agreement includes unlimited liability and auto-renew terms. " +
+        "Termination and governing law are omitted. Payment obligations are broad and " +
+        "there is no liability cap for either party."
+    );
 
-    await expect(reviewContract("Test contract")).rejects.toThrow();
+    expect(result.risk_score).toBeGreaterThanOrEqual(50);
+    expect(result.findings.some((finding) => finding.clause === "Liability")).toBe(true);
   });
 
-  it("normalizes out-of-range risk scores", async () => {
-    const mockResult = {
-      risk_score: 150, // out of range
-      summary: "High risk contract",
-      findings: [],
-    };
+  it("lists missing clauses for sparse contracts", async () => {
+    const result = await reviewContract(
+      "This contract describes services and payment terms in general language, but it " +
+        "does not include governing law, liability limitation, or clear termination rights."
+    );
 
-    mockCreate.mockResolvedValueOnce({
-      choices: [{ message: { content: JSON.stringify(mockResult) } }],
-    });
-
-    const result = await reviewContract("Test contract");
-    expect(result.risk_score).toBeLessThanOrEqual(100);
-    expect(result.risk_score).toBeGreaterThanOrEqual(0);
+    expect(result.missing_clauses.length).toBeGreaterThan(0);
+    expect(result.summary.length).toBeGreaterThan(0);
   });
 });

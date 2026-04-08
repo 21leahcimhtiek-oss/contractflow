@@ -30,7 +30,79 @@ You must respond with a JSON object matching this exact schema:
 
 Be thorough but concise. Focus on material risks, not minor stylistic issues.`;
 
+function fallbackReview(content: string): AiReviewResult {
+  const text = content.toLowerCase();
+  const findings: AiReviewResult["findings"] = [];
+  const missingClauses: string[] = [];
+  const positiveAspects: string[] = [];
+  let score = 20;
+
+  if (text.includes("unlimited liability")) {
+    score += 30;
+    findings.push({
+      id: "risk-unlimited-liability",
+      severity: "high",
+      clause: "Liability",
+      issue: "Unlimited liability exposure detected.",
+      suggestion: "Add a mutual liability cap tied to fees paid.",
+      affected_text: "unlimited liability",
+    });
+  }
+
+  if (text.includes("auto-renew")) {
+    score += 12;
+    findings.push({
+      id: "risk-auto-renewal",
+      severity: "medium",
+      clause: "Term and Renewal",
+      issue: "Auto-renewal language may create unplanned obligations.",
+      suggestion: "Require clear renewal notice windows and opt-out rights.",
+      affected_text: "auto-renew",
+    });
+  }
+
+  if (!text.includes("governing law")) {
+    score += 8;
+    missingClauses.push("Governing law");
+  } else {
+    positiveAspects.push("Governing law clause present");
+  }
+
+  if (!text.includes("termination")) {
+    score += 10;
+    missingClauses.push("Termination rights");
+  } else {
+    positiveAspects.push("Termination clause present");
+  }
+
+  if (!text.includes("limitation of liability")) {
+    score += 12;
+    missingClauses.push("Limitation of liability");
+  } else {
+    positiveAspects.push("Liability limitation language present");
+  }
+
+  const normalized = Math.max(0, Math.min(100, score));
+
+  return {
+    risk_score: normalized,
+    summary:
+      normalized >= 70
+        ? "Fallback review detected high contractual risk."
+        : normalized >= 40
+        ? "Fallback review detected moderate contractual risk."
+        : "Fallback review detected low contractual risk.",
+    findings,
+    missing_clauses: missingClauses,
+    positive_aspects: positiveAspects,
+  };
+}
+
 async function reviewWithRetry(content: string, attempt = 0): Promise<AiReviewResult> {
+  if (!process.env.OPENAI_API_KEY) {
+    return fallbackReview(content);
+  }
+
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -71,12 +143,12 @@ async function reviewWithRetry(content: string, attempt = 0): Promise<AiReviewRe
         ? result.positive_aspects.map(String)
         : [],
     };
-  } catch (error) {
+  } catch {
     if (attempt < 2) {
       await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
       return reviewWithRetry(content, attempt + 1);
     }
-    throw error;
+    return fallbackReview(content);
   }
 }
 

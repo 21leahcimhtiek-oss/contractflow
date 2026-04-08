@@ -143,6 +143,7 @@ CREATE INDEX idx_contracts_type ON contracts(org_id, type);
 CREATE INDEX idx_contracts_end_date ON contracts(end_date) WHERE end_date IS NOT NULL;
 CREATE INDEX idx_signatures_contract_id ON signatures(contract_id);
 CREATE INDEX idx_signatures_email ON signatures(signer_email);
+CREATE UNIQUE INDEX idx_signatures_contract_signer ON signatures(contract_id, signer_email);
 CREATE INDEX idx_audit_trail_contract ON audit_trail(contract_id, created_at DESC);
 CREATE INDEX idx_audit_trail_org ON audit_trail(org_id, created_at DESC);
 CREATE INDEX idx_contract_versions_contract ON contract_versions(contract_id, version_number DESC);
