@@ -6,6 +6,7 @@ jest.mock("@/lib/supabase/server", () => ({
 
 jest.mock("@/lib/rate-limit", () => ({
   standardRateLimit: { limit: jest.fn().mockResolvedValue({ success: true }) },
+  checkRateLimit: jest.fn().mockResolvedValue({ success: true, remaining: 10, reset: Date.now() }),
 }));
 
 import { POST } from "@/app/api/contracts/[id]/sign/route";
@@ -64,8 +65,9 @@ describe("POST /api/contracts/[id]/sign", () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValueOnce({ data: mockMembership, error: null })
-        .mockResolvedValueOnce({ data: null, error: { message: "Not found" } }),
+      upsert: jest.fn().mockResolvedValue({ data: null, error: null }),
+      insert: jest.fn().mockResolvedValue({ data: null, error: null }),
+      single: jest.fn().mockResolvedValue({ data: null, error: { message: "Not found" } }),
     });
 
     const req = new NextRequest("http://localhost/api/contracts/notexist/sign", {

@@ -1,14 +1,17 @@
+// Set OPENAI_API_KEY before importing the module
+process.env.OPENAI_API_KEY = "test-key";
+
 import { reviewContract } from "@/lib/openai/review-contract";
 
 describe("reviewContract fallback", () => {
-  const originalKey = process.env.OPENAI_API_KEY;
-
   beforeEach(() => {
+    // Clear the key to test fallback behavior
     process.env.OPENAI_API_KEY = "";
   });
 
   afterAll(() => {
-    process.env.OPENAI_API_KEY = originalKey;
+    // Restore a test key
+    process.env.OPENAI_API_KEY = "test-key";
   });
 
   it("returns high risk findings for risky language", async () => {

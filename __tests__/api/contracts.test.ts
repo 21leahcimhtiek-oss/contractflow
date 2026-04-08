@@ -7,6 +7,7 @@ jest.mock("@/lib/supabase/server", () => ({
 
 jest.mock("@/lib/rate-limit", () => ({
   standardRateLimit: { limit: jest.fn().mockResolvedValue({ success: true }) },
+  checkRateLimit: jest.fn().mockResolvedValue({ success: true, remaining: 10, reset: Date.now() }),
 }));
 
 import { GET, POST } from "@/app/api/contracts/route";
@@ -79,6 +80,7 @@ describe("POST /api/contracts", () => {
       eq: jest.fn().mockReturnThis(),
       single: jest.fn().mockResolvedValue({ data: mockMembership, error: null }),
       insert: jest.fn().mockReturnThis(),
+      in: jest.fn().mockResolvedValue({ count: 5, error: null }),
       count: jest.fn().mockResolvedValue({ count: 5, error: null }),
     });
     mockSupabase.from.mockImplementation(fromMock);
