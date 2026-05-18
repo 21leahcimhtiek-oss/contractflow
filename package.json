@@ -61,5 +61,6 @@
     "@types/jest": "^29.5.12",
     "ts-jest": "^29.2.2",
     "@playwright/test": "^1.45.2"
-  }
+  },
+  "description": "contractflow in the Aurora ecosystem with a no-key-first local workflow."
 }
